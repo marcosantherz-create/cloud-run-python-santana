@@ -33,7 +33,7 @@ HISTORY_PATH = "models/history_incremental.pkl"
 # =========================================================
 # PARÁMETROS
 # =========================================================
-bucket_name = st.text_input("Bucket de GCS:", "ml_grandesdatos")
+bucket_name = st.text_input("Bucket de GCS:", "ml_grandesdatos_310526")
 prefix      = st.text_input("Prefijo/carpeta:", "tlc_yellow_trips_2022/")
 limite      = st.number_input("Filas a procesar por archivo:", value=1000, step=100)
 
@@ -107,7 +107,7 @@ def new_model():
 # =========================================================
 # BOTÓN REINICIAR
 # =========================================================
-if st.button("🗑️ Reiniciar entrenamiento y borrar modelo guardado"):
+if st.button("Reiniciar entrenamiento y borrar modelo guardado"):
     delete_blob(bucket_name, MODEL_PATH)
     delete_blob(bucket_name, HISTORY_PATH)
     st.session_state.clear()
@@ -236,10 +236,13 @@ def process_single_blob(bkt, blob_name, limite=1000, chunksize=500):
 # =========================================================
 st.subheader("Procesamiento incremental")
 
-if st.button("▶️ Procesar siguiente archivo"):
+if st.button("⏭️ Procesar siguiente archivo"):
 
     if st.session_state.blobs is None:
-        blobs = list(storage.Client().bucket(bucket_name).list_blobs(prefix=prefix))
+        blobs = [
+            b for b in storage.Client().bucket(bucket_name).list_blobs(prefix=prefix)
+            if b.name.lower().endswith(".csv")
+        ]
         st.session_state.blobs = blobs
         st.info(f"Se encontraron {len(blobs)} archivos.")
 
