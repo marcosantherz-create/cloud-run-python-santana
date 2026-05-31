@@ -288,16 +288,58 @@ st.write(f"R² acumulado actual: **{last.get('R2_acumulado', 0.0):.4f}**")
 st.write(f"MAE acumulado actual: **{last.get('MAE_acumulado', 0.0):.4f}**")
 
 if st.session_state.history:
+    import altair as alt
+
     df_hist = pd.DataFrame(st.session_state.history)
 
     st.subheader("Historial de procesamiento")
     st.dataframe(df_hist)
 
+    # ==============================
+    # Gráfica R²
+    # ==============================
     st.subheader("Evolución R² acumulado")
-    st.line_chart(df_hist[["R2_acumulado"]])
 
+    chart_r2 = (
+        alt.Chart(df_hist.reset_index())
+        .mark_line(
+            color="#055a4d",
+            strokeWidth=4,
+            point=True
+        )
+        .encode(
+            x=alt.X("index:Q", title="Archivos procesados"),
+            y=alt.Y("R2_acumulado:Q", title="R² acumulado")
+        )
+        .properties(
+            height=400
+        )
+    )
+
+    st.altair_chart(chart_r2, use_container_width=True)
+
+    # ==============================
+    # Gráfica MAE
+    # ==============================
     st.subheader("Evolución MAE acumulado")
-    st.line_chart(df_hist[["MAE_acumulado"]])
+
+    chart_mae = (
+        alt.Chart(df_hist.reset_index())
+        .mark_line(
+            color="#055a4d",
+            strokeWidth=4,
+            point=True
+        )
+        .encode(
+            x=alt.X("index:Q", title="Archivos procesados"),
+            y=alt.Y("MAE_acumulado:Q", title="MAE acumulado")
+        )
+        .properties(
+            height=400
+        )
+    )
+
+    st.altair_chart(chart_mae, use_container_width=True)
 
 st.caption("Cloud Run + River • Dataset público de taxis NYC")
 
