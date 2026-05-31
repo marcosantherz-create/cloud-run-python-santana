@@ -174,7 +174,10 @@ if st.button("Procesar siguiente archivo"):
     if st.session_state.blobs is None:
         client = storage.Client()
         bucket = client.bucket(bucket_name)
-        st.session_state.blobs = list(bucket.list_blobs(prefix=prefix))
+        st.session_state.blobs = [
+            b for b in bucket.list_blobs(prefix=prefix)
+            if b.name.lower().endswith(".csv")
+            ]
         st.session_state.index = 0
         st.info(f"Se encontraron {len(st.session_state.blobs)} archivos.")
 
