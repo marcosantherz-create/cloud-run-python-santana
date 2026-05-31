@@ -49,7 +49,7 @@ def load_model_from_gcs(bucket_name, source_blob):
 # =========================================================
 # PARÁMETROS
 # =========================================================
-bucket_name = st.text_input("Bucket de GCS:", "bucket_131025")
+bucket_name = st.text_input("Bucket de GCS:", "ml_grandesdatos_310526")
 prefix = st.text_input("Prefijo/carpeta:", "tlc_yellow_trips_2022/")
 limite = st.number_input("Filas a procesar por archivo:", value=1000, step=100)
 
